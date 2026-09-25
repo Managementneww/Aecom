@@ -137,6 +137,10 @@
   .foot-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;max-width:1120px;margin:0 auto;padding:0 24px;}
   .foot-inner strong{color:#e6e9ec;font-weight:600;}
 
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,140%);background:var(--ink);color:var(--paper);padding:14px 22px;border-radius:10px;font-size:14.5px;font-weight:500;box-shadow:0 12px 30px rgba(0,0,0,.25);transition:transform .4s ease;z-index:99;display:flex;align-items:center;gap:10px;max-width:90vw;}
+  .toast.show{transform:translate(-50%,0);}
+  .toast svg{width:18px;height:18px;stroke:#7ddb9a;flex:none;}
   @media(max-width:960px){
     .services{grid-template-columns:repeat(2,1fr);}
     .claims-grid{grid-template-columns:repeat(2,1fr);}
@@ -155,6 +159,7 @@
     .hero-inner{max-width:none;}
   }
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -360,16 +365,24 @@
         </div>
       </div>
     </div>
-    <form class="reveal" onsubmit="event.preventDefault(); window.location.href='mailto:aecombuilders@gmail.com?subject=Quote request — '+encodeURIComponent(document.getElementById('addr').value)+'&body='+encodeURIComponent(document.getElementById('msg').value+'\n\nName: '+document.getElementById('name').value+'\nPhone: '+document.getElementById('phone').value+'\nAddress: '+document.getElementById('addr').value);">
-      <div><label for="name">Name</label><input id="name" type="text" required></div>
-      <div><label for="phone">Phone</label><input id="phone" type="tel"></div>
-      <div><label for="addr">Job address / suburb</label><input id="addr" type="text"></div>
-      <div><label for="msg">What's happened / what needs doing?</label><textarea id="msg" required></textarea></div>
+    <form class="reveal" action="https://formsubmit.co/aecombuilders@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="Website enquiry — AECOM Builders">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://managementneww.github.io/Aecom/#sent">
+      <input type="text" name="_honey" style="display:none">
+      <div><label for="name">Name</label><input id="name" name="name" type="text" required></div>
+      <div><label for="phone">Phone</label><input id="phone" name="phone" type="tel"></div>
+      <div><label for="addr">Job address / suburb</label><input id="addr" name="address" type="text"></div>
+      <div><label for="msg">What's happened / what needs doing?</label><textarea id="msg" name="message" required></textarea></div>
       <button class="btn" type="submit">Send enquiry</button>
+      <p id="form-note" style="font-size:12.5px;color:var(--mute);margin-top:2px;">Enquiries go straight to our inbox — you'll see a confirmation once sent.</p>
     </form>
   </div>
 </section>
 
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M20 7L9 18l-5-5"/></svg><span>Thanks — your enquiry has been sent. We'll be in touch shortly.</span></div>
 <footer>
   <div class="foot-inner">
     <div>© <span id="year"></span> <strong>AECOM Builders</strong> · Building Rectification Specialists · ABN 76 738 242 056 · DBU Licence 1309596</div>
@@ -386,6 +399,13 @@
   n.querySelectorAll('a').forEach(a => a.addEventListener('click', () => n.classList.remove('open')));
   const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }), {threshold:.12});
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  if(location.hash === '#sent'){
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 6000);
+    history.replaceState(null,'',location.pathname);
+  }
 </script>
 
 </body>
